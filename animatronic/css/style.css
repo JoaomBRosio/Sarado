@@ -1,0 +1,25 @@
+body {
+    font-family: Arial, sans-serif;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+button {
+    padding: 10px 15px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+
+button:disabled {
+    background: #cccccc;
+}
+
+#output {
+    margin-top: 20px;
+    border: 1px solid #ddd;
+    padding: 10px;
+    min-height: 100px;
+}
