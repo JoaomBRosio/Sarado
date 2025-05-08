@@ -1,30 +1,26 @@
-/* filepath: c:\Users\pc\Desktop\animatronic\script.js */
 let port;
 let reader;
 let readableStreamClosed;
 
-// Elementos da interface
 const connectBtn = document.getElementById('connectBtn');
 const disconnectBtn = document.getElementById('disconnectBtn');
 const sendBtn = document.getElementById('sendBtn');
 const commandInput = document.getElementById('commandInput');
 const outputDiv = document.getElementById('output');
+const controlButtons = document.querySelectorAll('.controlBtn');
+const rageBtn = document.getElementById('rageBtn');
 
-// Conectar ao dispositivo serial
 connectBtn.addEventListener('click', async () => {
     try {
         port = await navigator.serial.requestPort();
-        await port.open({ baudRate: 9600 }); // Ajuste a taxa de transmissão conforme necessário
+        await port.open({ baudRate: 9600 });
 
-        // Configurar leitor
         const textDecoder = new TextDecoderStream();
         readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
         reader = textDecoder.readable.getReader();
 
-        // Ler dados continuamente
         readData();
 
-        // Atualizar interface
         connectBtn.disabled = true;
         disconnectBtn.disabled = false;
         sendBtn.disabled = false;
@@ -35,7 +31,6 @@ connectBtn.addEventListener('click', async () => {
     }
 });
 
-// Desconectar
 disconnectBtn.addEventListener('click', async () => {
     try {
         if (reader) {
@@ -59,22 +54,36 @@ disconnectBtn.addEventListener('click', async () => {
     }
 });
 
-// Enviar comando
 sendBtn.addEventListener('click', async () => {
     if (!port || !commandInput.value) return;
+    sendCommand(commandInput.value);
+    commandInput.value = '';
+});
 
+controlButtons.forEach(button => {
+    button.addEventListener('click', () => {
+        const command = button.getAttribute('data-command');
+        sendCommand(command);
+    });
+});
+
+rageBtn.addEventListener('click', () => {
+    const isRage = rageBtn.classList.toggle('rage');
+    rageBtn.textContent = isRage ? '🔴 Rage Mode Ativado' : '⚪ Paz';
+    sendCommand(isRage ? 'led_red' : 'led_white');
+});
+
+async function sendCommand(command) {
     try {
         const writer = port.writable.getWriter();
-        await writer.write(new TextEncoder().encode(commandInput.value + '\n')); // Adiciona quebra de linha
+        await writer.write(new TextEncoder().encode(command + '\n'));
         writer.releaseLock();
-        logMessage(`Enviado: ${commandInput.value}`);
-        commandInput.value = '';
+        logMessage(`Enviado: ${command}`);
     } catch (error) {
         logMessage(`Erro ao enviar: ${error}`);
     }
-});
+}
 
-// Ler dados do ESP32
 async function readData() {
     try {
         while (true && reader) {
@@ -92,7 +101,6 @@ async function readData() {
     }
 }
 
-// Exibir mensagens na interface
 function logMessage(message) {
     outputDiv.innerHTML += `${new Date().toLocaleTimeString()}: ${message}<br>`;
     outputDiv.scrollTop = outputDiv.scrollHeight;

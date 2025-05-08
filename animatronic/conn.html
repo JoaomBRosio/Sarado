@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html>
 <head>
     <title>Conexão com ESP32</title>
@@ -10,8 +9,24 @@
     <button id="disconnectBtn" disabled>Desconectar</button>
     <input id="commandInput" type="text" placeholder="Digite o comando">
     <button id="sendBtn" disabled>Enviar</button>
-    
+
     <div id="output"></div>
+
+    <div class="controls">
+        <h2>Boca</h2>
+        <button class="controlBtn" data-command="mouth_toggle">Fechar e abrir</button>
+        <button class="controlBtn" data-command="mouth_close">Fechar</button>
+        <button class="controlBtn" data-command="mouth_open">Abrir </button>
+
+        <h2>Pálpebras</h2>
+        <button class="controlBtn" data-command="eye_blink">Piscar</button>
+        <button class="controlBtn" data-command="eye_close">Fechar</button>
+        <button class="controlBtn" data-command="eye_open">Abrir</button>
+
+
+        <h2>LED do Olho</h2>
+        <button id="rageBtn">⚪ Paz</button>
+    </div>
 
     <script src="js/script.js"></script>
 </body>
